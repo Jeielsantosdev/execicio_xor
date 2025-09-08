@@ -3,28 +3,13 @@ no mesmo programa adicione a opção de ler um arquivo que desfaça o xor e conv
 
 
 
-def encrypt_text(text, key):
-    encrypted_bytes = bytearray()
-    for i, char in enumerate(text):
-        key_char = key[i % len(key)]
-        original_char_code = ord(char)
-        code_char_key = ord(key_char) 
-        encrypted_code = original_char_code ^ code_char_key
-        encrypted_bytes.append(encrypted_code)
-    return bytes(encrypted_bytes)
+def encrypt_text(text: str, key:int) ->str:
+    return ''.join(chr(ord(c) ^ key) for c in text)
 
-def decipher_text(cipher_bytes, key):
-    deciphered_text = ""
-    for i, byte in enumerate(cipher_bytes):
-        key_char = key[i % len(key)]
-        code_char_key = ord(key_char)
-        decrypted_code = byte ^ code_char_key
-        deciphered_text += chr(decrypted_code)
-    return deciphered_text
 
 def salvar_arquivo(file_name, encrypted_data):
     try:
-        with open(file_name, 'wb') as f:
+        with open(file_name, 'w', encoding="utf-8") as f:  # <-- modo texto
             f.write(encrypted_data)
         print(f"\n Sucesso: Mensagem cifrada salva em '{file_name}'")
     except IOError as e:
@@ -32,10 +17,10 @@ def salvar_arquivo(file_name, encrypted_data):
 
 def read_file(file_name):
     try:
-        with open(file_name, 'rb') as f:
-            data_bytes = f.read()
+        with open(file_name, 'r', encoding="utf-8") as f:  # <-- modo texto
+            data_str = f.read()
             print(f"\n Sucesso: Arquivo '{file_name}' lido.")
-            return data_bytes
+            return data_str
     except FileNotFoundError:
         print(f"\n Erro: Arquivo '{file_name}' não encontrado.")
         return None
@@ -47,15 +32,15 @@ def read_file(file_name):
 # Exemplo de uso
 
 msg = "jeiel"
-key = "123"
+key = 123
 
 
 encrypted = encrypt_text(msg, key)
-salvar_arquivo("ab.bin", encrypted)
+salvar_arquivo("bb.bin", encrypted)
 print("codificada: ", encrypted)
 
-loaded = read_file("ab.bin")
-if loaded:
-    print(" Decifrada:", decipher_text(loaded, key))
+loaded = read_file("bb.bin")
+
+print(" Decifrada:", encrypt_text(encrypted, key))
 
 
